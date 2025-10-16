@@ -10,7 +10,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="rmn-lora-system",
-    version="1.0.0",
+    version="1.1.0",
     author="RMN Team",
     description="Retail Media Network LoRA Optimization System",
     long_description=long_description,
