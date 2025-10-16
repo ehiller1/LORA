@@ -1,0 +1,28 @@
+{
+  "adapter_id": "industry_retail_media",
+  "adapter_type": "industry",
+  "name": "Retail Media Industry",
+  "version": "1.0.0",
+  "path": "demo/mock_adapters/industry_retail_media",
+  "dependencies": [],
+  "tags": ["rmis", "clean_room", "retail_media", "campaign_metrics"],
+  "created_at": "2024-01-15T00:00:00Z",
+  "description": "Industry adapter for retail media domain knowledge",
+  "capabilities": [
+    "RMIS schema understanding",
+    "Clean room protocol knowledge",
+    "Campaign metric interpretation",
+    "Attribution model expertise",
+    "Retail media ontology"
+  ],
+  "training_data": {
+    "dataset": "retail_media_industry_corpus",
+    "examples": 50000,
+    "domains": ["retail", "advertising", "ecommerce", "measurement"]
+  },
+  "performance": {
+    "schema_accuracy": 0.98,
+    "mapping_success_rate": 0.96,
+    "inference_time_ms": 45
+  }
+}

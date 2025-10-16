@@ -71,3 +71,7 @@ jinja2>=3.1.0  # For RLHF UI templates
 alembic>=1.13.0  # For database migrations
 supabase>=2.0.0  # Optional: Real-time features, auth, storage
 sqlparse>=0.4.4  # For SQL parsing in auto-checks
+
+# Agent Framework
+crewai>=0.28.0  # Multi-agent orchestration framework
+crewai-tools>=0.2.0  # Pre-built tools for CrewAI

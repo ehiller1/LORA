@@ -1,0 +1,36 @@
+{
+  "adapter_id": "manufacturer_brand_x",
+  "adapter_type": "manufacturer",
+  "name": "Brand X Manufacturer",
+  "version": "1.0.0",
+  "path": "demo/mock_adapters/manufacturer_brand_x",
+  "dependencies": ["industry_retail_media"],
+  "tags": ["brand_x", "private_metrics", "product_hierarchy", "brand_voice"],
+  "created_at": "2024-01-20T00:00:00Z",
+  "description": "Manufacturer adapter with brand-specific knowledge and private data access",
+  "capabilities": [
+    "Brand tone and voice guidelines",
+    "Product hierarchy understanding",
+    "Private margin data access",
+    "Promotional calendar knowledge",
+    "Stock level awareness",
+    "Pricing strategy"
+  ],
+  "training_data": {
+    "dataset": "brand_x_corpus",
+    "examples": 25000,
+    "domains": ["brand_guidelines", "product_catalog", "marketing_materials"]
+  },
+  "private_data_access": {
+    "margin_data": true,
+    "stock_levels": true,
+    "promotional_flags": true,
+    "pricing_data": true,
+    "supplier_info": true
+  },
+  "performance": {
+    "brand_compliance": 0.99,
+    "tone_accuracy": 0.97,
+    "inference_time_ms": 52
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "adapter_id": "task_planning",
+  "adapter_type": "task",
+  "name": "Campaign Planning Task",
+  "version": "1.0.0",
+  "path": "demo/mock_adapters/task_planning",
+  "dependencies": [],
+  "tags": ["planning", "optimization", "budget_allocation", "tool_calling"],
+  "created_at": "2024-01-18T00:00:00Z",
+  "description": "Task-specific adapter for campaign planning and budget optimization",
+  "capabilities": [
+    "Budget allocation optimization",
+    "Constraint satisfaction",
+    "Tool calling (optimizer, clean_room)",
+    "Plan generation and formatting",
+    "Experiment design integration"
+  ],
+  "training_data": {
+    "dataset": "planning_task_corpus",
+    "examples": 15000,
+    "domains": ["optimization", "planning", "tool_use"]
+  },
+  "tool_calling": {
+    "supported_tools": [
+      "allocate_budget",
+      "query_clean_room",
+      "design_experiment"
+    ],
+    "accuracy": 0.94
+  },
+  "performance": {
+    "plan_quality_score": 0.92,
+    "constraint_satisfaction": 0.98,
+    "inference_time_ms": 38
+  }
+}

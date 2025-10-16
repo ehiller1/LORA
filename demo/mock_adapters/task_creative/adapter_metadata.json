@@ -1,0 +1,32 @@
+{
+  "adapter_id": "task_creative",
+  "adapter_type": "task",
+  "name": "Creative Generation Task",
+  "version": "1.0.0",
+  "path": "demo/mock_adapters/task_creative",
+  "dependencies": [],
+  "tags": ["creative", "copywriting", "compliance", "policy_check"],
+  "created_at": "2024-01-19T00:00:00Z",
+  "description": "Task-specific adapter for generating compliant creative copy",
+  "capabilities": [
+    "Ad copy generation",
+    "Policy compliance checking",
+    "Tone adaptation",
+    "Length constraints",
+    "Call-to-action optimization"
+  ],
+  "training_data": {
+    "dataset": "creative_task_corpus",
+    "examples": 20000,
+    "domains": ["copywriting", "advertising", "compliance"]
+  },
+  "compliance": {
+    "policy_check_accuracy": 0.98,
+    "auto_fix_success_rate": 0.89
+  },
+  "performance": {
+    "creative_quality_score": 0.91,
+    "compliance_rate": 0.98,
+    "inference_time_ms": 42
+  }
+}
