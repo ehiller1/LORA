@@ -1,0 +1,163 @@
+# Retailer Beta to RMIS Mapping Definition
+# Version: 0.2
+
+retailer_id: beta
+version: "0.2.0"
+description: "Mapping for Retailer Beta JSONL exports to RMIS canonical schema"
+
+# Source configuration
+source:
+  format: jsonl
+  encoding: utf-8
+  timezone: America/Los_Angeles  # PST
+  currency: EUR
+
+# Field mappings
+fields:
+  # Core identifiers
+  event_id:
+    from: id
+    type: string
+    required: true
+    
+  ts:
+    from: ts
+    type: timestamp
+    transform: to_utc
+    required: true
+    
+  retailer_id:
+    const: beta
+    type: string
+    
+  # Placement mapping
+  placement_type:
+    from: placementCategory
+    type: enum
+    map:
+      sponsored_prod: sponsored_product
+      display_banner: onsite_display
+      video_pre_roll: offsite_video
+      native: native
+    default: other
+    
+  # Metrics (with EUR to USD conversion)
+  cost:
+    from: spend
+    type: decimal
+    transform: eur_to_usd  # Apply FX rate
+    
+  impressions:
+    from: imps
+    type: integer
+    default: 0
+    
+  clicks:
+    from: clks
+    type: integer
+    default: 0
+    
+  conversions:
+    from: sales_attrib
+    type: decimal
+    transform: estimate_conversions  # Divide by avg order value
+    
+  revenue:
+    from: sales_attrib
+    type: decimal
+    transform: eur_to_usd
+    default: 0.0
+    
+  # References
+  campaign_id:
+    from: camp_ref
+    type: string
+    
+  sku:
+    from: product_id
+    type: string
+    required: true
+    
+  # Dimensions
+  audience_segment:
+    from: aud
+    type: enum
+    map:
+      retarget: retargeting
+      category_inmarket: inmarket
+      lapsed: lapsed
+    default: unknown
+    allow_null: true
+    
+  device_type:
+    from: dev_type
+    type: enum
+    map:
+      mob: mobile
+      desk: desktop
+      tab: tablet
+      unk: unknown
+    default: unknown
+    
+  inventory_type:
+    from: inventory
+    type: enum
+    map:
+      owned: owned
+      partner: partner
+    default: owned
+    allow_null: true
+    
+  attribution_model:
+    const: last_click
+    type: enum
+
+# Transformation functions
+transforms:
+  eur_to_usd:
+    type: multiply
+    factor: 1.10  # Simplified FX rate
+    
+  estimate_conversions:
+    type: divide
+    divisor: 50.0  # Assume avg order value of 50 EUR
+    then: floor  # Round down to integer
+
+# Validation rules
+validation:
+  - name: non_negative_metrics
+    type: check
+    condition: "cost >= 0 AND impressions >= 0 AND clicks >= 0"
+    
+  - name: clicks_le_impressions
+    type: check
+    condition: "clicks <= impressions"
+    
+  - name: required_keys
+    type: not_null
+    fields: [event_id, ts, sku]
+    
+  - name: enum_coverage
+    type: enum_coverage
+    fields: [placement_type, device_type]
+    threshold: 0.90  # 90% for Beta (more variance)
+
+# Quality metrics
+quality_metrics:
+  - enum_coverage_pct
+  - non_null_key_pct
+  - join_success_rate
+  - fx_conversion_accuracy
+  - duplicate_event_id_pct
+
+# Known issues
+known_issues:
+  - field: inventory_type
+    issue: "Value 'partner' not in original RMIS taxonomy"
+    status: pending
+    suggested_fix: "Add 'partner' to inventory_type enum"
+    
+  - field: conversions
+    issue: "Estimated from sales_attrib, not actual conversion count"
+    status: accepted
+    workaround: "Use revenue-based metrics instead"

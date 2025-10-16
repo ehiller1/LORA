@@ -1,0 +1,138 @@
+# Retailer Alpha to RMIS Mapping Definition
+# Version: 0.2
+
+retailer_id: alpha
+version: "0.2.0"
+description: "Mapping for Retailer Alpha CSV exports to RMIS canonical schema"
+
+# Source configuration
+source:
+  format: csv
+  encoding: utf-8
+  timezone: America/Chicago  # CST
+  currency: USD
+
+# Field mappings
+fields:
+  # Core identifiers
+  event_id:
+    from: event_id
+    type: string
+    required: true
+    
+  ts:
+    from: timestamp
+    type: timestamp
+    transform: to_utc
+    required: true
+    
+  retailer_id:
+    const: alpha
+    type: string
+    
+  # Placement mapping
+  placement_type:
+    from: adType
+    type: enum
+    map:
+      sp: sponsored_product
+      SP: sponsored_product
+      sd: sponsored_display
+      SD: sponsored_display
+      onsite_disp: onsite_display
+      offsite_vid: offsite_video
+    default: other
+    
+  # Metrics
+  cost:
+    from: cost_micros
+    type: decimal
+    transform: divide_by_million  # Micros to dollars
+    
+  impressions:
+    from: impressions
+    type: integer
+    default: 0
+    
+  clicks:
+    from: clicks
+    type: integer
+    default: 0
+    
+  conversions:
+    from: conv_click_7d
+    type: integer
+    default: 0
+    
+  revenue:
+    from: revenue_7d
+    type: decimal
+    default: 0.0
+    
+  # References
+  campaign_id:
+    from: campaign_id
+    type: string
+    
+  sku:
+    from: sku
+    type: string
+    required: true
+    
+  # Dimensions
+  audience_segment:
+    from: audience_segment
+    type: enum
+    map:
+      retargeting: retargeting
+      inmarket: inmarket
+      lookalike: lookalike
+    default: unknown
+    allow_null: true
+    
+  device_type:
+    from: device
+    type: enum
+    map:
+      mobile: mobile
+      MOBILE: mobile
+      desktop: desktop
+      DESKTOP: desktop
+      tablet: tablet
+      TABLET: tablet
+      UNKNOWN: unknown
+    default: unknown
+    
+  inventory_type:
+    const: owned
+    type: enum
+    
+  attribution_model:
+    const: last_click
+    type: enum
+
+# Validation rules
+validation:
+  - name: non_negative_metrics
+    type: check
+    condition: "cost >= 0 AND impressions >= 0 AND clicks >= 0"
+    
+  - name: clicks_le_impressions
+    type: check
+    condition: "clicks <= impressions"
+    
+  - name: required_keys
+    type: not_null
+    fields: [event_id, ts, sku]
+    
+  - name: enum_coverage
+    type: enum_coverage
+    fields: [placement_type, device_type]
+    threshold: 0.95  # 95% should map to known enums
+
+# Quality metrics
+quality_metrics:
+  - enum_coverage_pct
+  - non_null_key_pct
+  - join_success_rate
+  - duplicate_event_id_pct

@@ -1,0 +1,73 @@
+# Core ML/AI
+torch>=2.1.0
+transformers>=4.36.0
+peft>=0.7.0
+bitsandbytes>=0.41.0
+accelerate>=0.25.0
+datasets>=2.16.0
+trl>=0.7.0
+
+# Data Processing
+pandas>=2.1.0
+pyarrow>=14.0.0
+polars>=0.20.0
+numpy>=1.24.0
+scipy>=1.11.0
+
+# Optimization & Causal Inference
+scikit-learn>=1.3.0
+statsmodels>=0.14.0
+econml>=0.14.0
+optuna>=3.5.0
+cvxpy>=1.4.0
+
+# API & Web
+fastapi>=0.109.0
+uvicorn>=0.27.0
+pydantic>=2.5.0
+httpx>=0.26.0
+
+# Database & Storage
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.9
+redis>=5.0.0
+duckdb>=0.9.0
+
+# Vector Store & RAG
+chromadb>=0.4.22
+sentence-transformers>=2.3.0
+langchain>=0.1.0
+langchain-community>=0.0.13
+
+# Monitoring & Observability
+prometheus-client>=0.19.0
+opentelemetry-api>=1.22.0
+opentelemetry-sdk>=1.22.0
+
+# Configuration & Utils
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+click>=8.1.7
+rich>=13.7.0
+tenacity>=8.2.3
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.23.0
+pytest-cov>=4.1.0
+hypothesis>=6.98.0
+
+# Code Quality
+black>=24.1.0
+ruff>=0.1.0
+mypy>=1.8.0
+
+# Jupyter (optional)
+jupyter>=1.0.0
+ipywidgets>=8.1.0
+
+# Additional dependencies for new features
+jinja2>=3.1.0  # For RLHF UI templates
+alembic>=1.13.0  # For database migrations
+supabase>=2.0.0  # Optional: Real-time features, auth, storage
+sqlparse>=0.4.4  # For SQL parsing in auto-checks

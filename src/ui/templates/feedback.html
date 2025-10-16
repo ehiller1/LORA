@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Feedback - {{ brand.name }}{% endblock %}
+
+{% block content %}
+{% if request.query_params.get('success') %}
+<div class="alert alert-success">
+    <strong>Thank you!</strong> Your feedback has been recorded.
+</div>
+{% endif %}
+
+<div class="card">
+    <h2>{{ brand.name }} - {{ task_type|title }} Feedback</h2>
+    <p style="color: #6b7280;">Provide feedback on AI-generated outputs for {{ task_type }} tasks.</p>
+</div>
+
+<!-- Simple Thumbs Up/Down Feedback -->
+<div class="card">
+    <h2>👍 👎 Simple Feedback</h2>
+    <form method="post" action="/submit-simple-feedback">
+        <input type="hidden" name="brand_id" value="{{ brand.brand_id }}">
+        <input type="hidden" name="task_type" value="{{ task_type }}">
+        
+        <div class="form-group">
+            <label for="user_id">Your Name/ID</label>
+            <input type="text" id="user_id" name="user_id" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="prompt">Prompt</label>
+            <textarea id="prompt" name="prompt" required placeholder="Enter the prompt given to the AI..."></textarea>
+            {% if sample_prompts %}
+            <div style="margin-top: 8px;">
+                <strong style="font-size: 12px; color: #6b7280;">Sample prompts:</strong>
+                {% for sample in sample_prompts %}
+                <button type="button" class="btn btn-secondary" style="margin: 4px; font-size: 12px;" 
+                        onclick="document.getElementById('prompt').value = '{{ sample }}'">
+                    Use Sample {{ loop.index }}
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="model_output">Model Output</label>
+            <textarea id="model_output" name="model_output" required placeholder="Paste the AI's response..."></textarea>
+        </div>
+        
+        <div class="feedback-buttons">
+            <button type="submit" name="feedback_type" value="thumbs_up" class="btn btn-success">
+                👍 Thumbs Up
+            </button>
+            <button type="submit" name="feedback_type" value="thumbs_down" class="btn btn-danger">
+                👎 Thumbs Down
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Rating Feedback -->
+<div class="card">
+    <h2>⭐ Rating Feedback</h2>
+    <form method="post" action="/submit-rating">
+        <input type="hidden" name="brand_id" value="{{ brand.brand_id }}">
+        <input type="hidden" name="task_type" value="{{ task_type }}">
+        
+        <div class="form-group">
+            <label for="user_id_rating">Your Name/ID</label>
+            <input type="text" id="user_id_rating" name="user_id" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="prompt_rating">Prompt</label>
+            <textarea id="prompt_rating" name="prompt" required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="model_output_rating">Model Output</label>
+            <textarea id="model_output_rating" name="model_output" required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label>Rating (1-5 stars)</label>
+            <div class="rating-stars">
+                <input type="radio" id="star5" name="rating" value="5" required>
+                <label for="star5">⭐</label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4">⭐</label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3">⭐</label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2">⭐</label>
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1">⭐</label>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn">Submit Rating</button>
+    </form>
+</div>
+
+<!-- Preference Pair Feedback -->
+<div class="card">
+    <h2>🔄 Preference Feedback (for DPO Training)</h2>
+    <form method="post" action="/submit-preference">
+        <input type="hidden" name="brand_id" value="{{ brand.brand_id }}">
+        <input type="hidden" name="task_type" value="{{ task_type }}">
+        
+        <div class="form-group">
+            <label for="user_id_pref">Your Name/ID</label>
+            <input type="text" id="user_id_pref" name="user_id" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="prompt_pref">Prompt</label>
+            <textarea id="prompt_pref" name="prompt" required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="output_a">Output A</label>
+            <div class="output-box">
+                <textarea id="output_a" name="output_a" required style="background: transparent; border: none; width: 100%;"></textarea>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="output_b">Output B</label>
+            <div class="output-box">
+                <textarea id="output_b" name="output_b" required style="background: transparent; border: none; width: 100%;"></textarea>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Which output is better?</label>
+            <div class="feedback-buttons">
+                <button type="submit" name="preferred" value="a" class="btn btn-success">
+                    Prefer Output A
+                </button>
+                <button type="submit" name="preferred" value="b" class="btn btn-success">
+                    Prefer Output B
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div style="text-align: center; margin-top: 40px;">
+    <a href="/" class="btn btn-secondary">Back to Home</a>
+    <a href="/dashboard?brand_id={{ brand.brand_id }}" class="btn btn-secondary">View Statistics</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Rating stars interaction
+document.querySelectorAll('.rating-stars label').forEach(label => {
+    label.addEventListener('mouseover', function() {
+        const rating = this.previousElementSibling.value;
+        document.querySelectorAll('.rating-stars label').forEach((l, i) => {
+            if (i >= 5 - rating) {
+                l.style.color = '#fbbf24';
+            } else {
+                l.style.color = '#d1d5db';
+            }
+        });
+    });
+});
+
+document.querySelector('.rating-stars').addEventListener('mouseout', function() {
+    const checked = document.querySelector('.rating-stars input:checked');
+    if (checked) {
+        const rating = checked.value;
+        document.querySelectorAll('.rating-stars label').forEach((l, i) => {
+            if (i >= 5 - rating) {
+                l.style.color = '#fbbf24';
+            } else {
+                l.style.color = '#d1d5db';
+            }
+        });
+    } else {
+        document.querySelectorAll('.rating-stars label').forEach(l => {
+            l.style.color = '#d1d5db';
+        });
+    }
+});
+</script>
+{% endblock %}

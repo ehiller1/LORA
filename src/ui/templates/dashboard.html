@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - RMN RLHF Feedback{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Feedback Statistics Dashboard</h2>
+    
+    {% if selected_brand %}
+    <p style="color: #6b7280;">Showing statistics for: <strong>{{ selected_brand }}</strong></p>
+    {% else %}
+    <p style="color: #6b7280;">Showing statistics for all brands</p>
+    {% endif %}
+    
+    <div style="margin-top: 16px;">
+        <label for="brand_filter" style="margin-right: 8px;">Filter by brand:</label>
+        <select id="brand_filter" onchange="window.location.href='/dashboard?brand_id=' + this.value">
+            <option value="">All Brands</option>
+            {% for brand in brands %}
+            <option value="{{ brand.brand_id }}" {% if selected_brand == brand.brand_id %}selected{% endif %}>
+                {{ brand.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="grid">
+    <div class="stat-card">
+        <h3>Total Feedback</h3>
+        <div class="value">{{ total_feedback }}</div>
+    </div>
+    
+    <div class="stat-card">
+        <h3>Thumbs Up</h3>
+        <div class="value" style="color: #10b981;">{{ by_type.get('thumbs_up', 0) }}</div>
+    </div>
+    
+    <div class="stat-card">
+        <h3>Thumbs Down</h3>
+        <div class="value" style="color: #ef4444;">{{ by_type.get('thumbs_down', 0) }}</div>
+    </div>
+    
+    <div class="stat-card">
+        <h3>Preference Pairs</h3>
+        <div class="value" style="color: #8b5cf6;">{{ by_type.get('preference', 0) }}</div>
+        <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">For DPO training</p>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Feedback by Type</h2>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+        {% for type, count in by_type.items() %}
+        <div style="display: flex; align-items: center;">
+            <div style="width: 150px; font-weight: 500;">{{ type|replace('_', ' ')|title }}</div>
+            <div style="flex: 1; background: #e5e7eb; height: 24px; border-radius: 4px; overflow: hidden;">
+                <div style="background: #2563eb; height: 100%; width: {{ (count / total_feedback * 100)|round(1) }}%;"></div>
+            </div>
+            <div style="width: 80px; text-align: right; font-weight: 600;">{{ count }} ({{ (count / total_feedback * 100)|round(1) }}%)</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card">
+    <h2>Feedback by Task Type</h2>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+        {% for task, count in by_task.items() %}
+        <div style="display: flex; align-items: center;">
+            <div style="width: 150px; font-weight: 500;">{{ task|title }}</div>
+            <div style="flex: 1; background: #e5e7eb; height: 24px; border-radius: 4px; overflow: hidden;">
+                <div style="background: #10b981; height: 100%; width: {{ (count / total_feedback * 100)|round(1) }}%;"></div>
+            </div>
+            <div style="width: 80px; text-align: right; font-weight: 600;">{{ count }} ({{ (count / total_feedback * 100)|round(1) }}%)</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card">
+    <h2>Export Data</h2>
+    <p style="color: #6b7280; margin-bottom: 16px;">Export feedback data for training</p>
+    <div style="display: flex; gap: 12px;">
+        <a href="/feedback/export-dpo{% if selected_brand %}?brand_id={{ selected_brand }}{% endif %}" class="btn">
+            Export DPO Dataset
+        </a>
+        <a href="/feedback/stats{% if selected_brand %}?brand_id={{ selected_brand }}{% endif %}" class="btn btn-secondary">
+            View API Stats
+        </a>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 40px;">
+    <a href="/" class="btn btn-secondary">Back to Home</a>
+</div>
+{% endblock %}

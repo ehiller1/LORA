@@ -1,0 +1,21 @@
+campaign_id,campaign_name,status,daily_budget,start_date,objective
+camp_alpha_001,Alpha Campaign 1,ENDED,7970,2024-01-22,CONVERSION
+camp_alpha_002,Alpha Campaign 2,ACTIVE,3251,2024-01-05,AWARENESS
+camp_alpha_003,Alpha Campaign 3,ACTIVE,5021,2024-01-26,CONSIDERATION
+camp_alpha_004,Alpha Campaign 4,ENDED,9958,2024-01-02,AWARENESS
+camp_alpha_005,Alpha Campaign 5,PAUSED,8981,2024-01-18,CONVERSION
+camp_alpha_006,Alpha Campaign 6,PAUSED,7667,2024-01-02,CONSIDERATION
+camp_alpha_007,Alpha Campaign 7,ACTIVE,3533,2024-01-02,CONSIDERATION
+camp_alpha_008,Alpha Campaign 8,ENDED,1797,2024-01-30,AWARENESS
+camp_alpha_009,Alpha Campaign 9,PAUSED,9193,2024-01-23,CONSIDERATION
+camp_alpha_010,Alpha Campaign 10,PAUSED,7260,2024-01-13,AWARENESS
+camp_alpha_011,Alpha Campaign 11,PAUSED,8738,2024-01-01,CONSIDERATION
+camp_alpha_012,Alpha Campaign 12,PAUSED,7153,2024-01-21,CONSIDERATION
+camp_alpha_013,Alpha Campaign 13,PAUSED,2184,2024-01-18,CONSIDERATION
+camp_alpha_014,Alpha Campaign 14,ENDED,2005,2024-01-03,AWARENESS
+camp_alpha_015,Alpha Campaign 15,ACTIVE,9567,2024-01-11,CONVERSION
+camp_alpha_016,Alpha Campaign 16,PAUSED,3829,2024-01-24,CONVERSION
+camp_alpha_017,Alpha Campaign 17,ENDED,2631,2024-01-27,AWARENESS
+camp_alpha_018,Alpha Campaign 18,PAUSED,7019,2024-01-04,CONVERSION
+camp_alpha_019,Alpha Campaign 19,PAUSED,1316,2024-01-04,AWARENESS
+camp_alpha_020,Alpha Campaign 20,PAUSED,8233,2024-01-13,CONVERSION

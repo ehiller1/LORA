@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Home - RMN RLHF Feedback{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Welcome to RLHF Feedback Collection</h2>
+    <p>Help improve our AI models by providing feedback on their outputs. Your input will be used to train better models through Reinforcement Learning from Human Feedback (RLHF).</p>
+</div>
+
+<div class="card">
+    <h2>Select Your Brand</h2>
+    {% if brands %}
+    <div class="grid">
+        {% for brand in brands %}
+        <div class="stat-card">
+            <h3>{{ brand.name }}</h3>
+            <p style="color: #6b7280; font-size: 14px; margin: 8px 0;">{{ brand.brand_id }}</p>
+            <div style="margin-top: 16px;">
+                <a href="/feedback/{{ brand.brand_id }}?task_type=budgeting" class="btn">Budgeting</a>
+                <a href="/feedback/{{ brand.brand_id }}?task_type=creative" class="btn btn-secondary">Creative</a>
+            </div>
+            <div style="margin-top: 8px;">
+                <a href="/feedback/{{ brand.brand_id }}?task_type=measurement" class="btn btn-secondary">Measurement</a>
+                <a href="/feedback/{{ brand.brand_id }}?task_type=planning" class="btn btn-secondary">Planning</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-error">
+        <strong>No brands found.</strong> Please create brands in the database first.
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Feedback Types</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+        <div>
+            <h3 style="font-size: 16px; margin-bottom: 8px;">👍 👎 Simple Feedback</h3>
+            <p style="font-size: 14px; color: #6b7280;">Quick thumbs up or down on model outputs</p>
+        </div>
+        <div>
+            <h3 style="font-size: 16px; margin-bottom: 8px;">⭐ Ratings</h3>
+            <p style="font-size: 14px; color: #6b7280;">Rate outputs on a 1-5 scale</p>
+        </div>
+        <div>
+            <h3 style="font-size: 16px; margin-bottom: 8px;">🔄 Preferences</h3>
+            <p style="font-size: 14px; color: #6b7280;">Choose between two outputs (for DPO training)</p>
+        </div>
+        <div>
+            <h3 style="font-size: 16px; margin-bottom: 8px;">✏️ Corrections</h3>
+            <p style="font-size: 14px; color: #6b7280;">Provide corrected versions of outputs</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+# RMN LoRA System Configuration
+
+# Base Model Configuration
+model:
+  base_model: "meta-llama/Llama-3.1-8B-Instruct"
+  device: "auto"  # auto, cuda, cpu
+  torch_dtype: "float16"
+  
+# LoRA Configuration
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  
+  # Quantization
+  use_4bit: true
+  bnb_4bit_compute_dtype: "float16"
+  bnb_4bit_quant_type: "nf4"
+  use_nested_quant: true
+
+# Training Configuration
+training:
+  num_train_epochs: 3
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 4
+  learning_rate: 2.0e-4
+  max_grad_norm: 0.3
+  warmup_ratio: 0.03
+  lr_scheduler_type: "cosine"
+  optim: "paged_adamw_32bit"
+  weight_decay: 0.001
+  max_seq_length: 2048
+  
+  # Logging
+  logging_steps: 10
+  save_steps: 100
+  eval_steps: 100
+
+# Data Configuration
+data:
+  harmonized_dir: "./data/harmonized"
+  training_dir: "./data/training"
+  raw_dir: "./data/raw"
+  
+  # RMIS settings
+  rmis_version: "0.1.0"
+  min_cell_size: 50
+
+# Optimization Services
+optimization:
+  # Budget allocation
+  budget:
+    method: "convex"  # convex or bandit
+    default_reserve_experiments: 0.1
+    min_roas_default: 3.0
+  
+  # Measurement
+  measurement:
+    default_power: 0.8
+    default_alpha: 0.05
+    min_experiment_weeks: 2
+  
+  # Causal inference
+  causal:
+    uplift_method: "t_learner"
+    cv_folds: 5
+
+# Privacy & Governance
+governance:
+  min_cell_size: 50
+  enable_pii_detection: true
+  enable_policy_checks: true
+  enable_differential_privacy: false
+  dp_epsilon: 1.0
+
+# Multi-Tenant Runtime
+runtime:
+  host: "0.0.0.0"
+  port: 8000
+  adapters_dir: "./models/adapters"
+  
+  # Default tenant settings
+  default_rate_limit: 100  # requests per minute
+  default_max_tokens: 2048
+  
+  # Monitoring
+  enable_metrics: true
+  metrics_port: 9090
+
+# Paths
+paths:
+  models_dir: "./models"
+  adapters_dir: "./models/adapters"
+  base_models_dir: "./models/base"
+  config_dir: "./config"
+  mappings_dir: "./config/mappings"
+  policies_dir: "./config/policies"
+  logs_dir: "./logs"
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "./logs/rmn-lora.log"

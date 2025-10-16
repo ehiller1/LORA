@@ -1,0 +1,121 @@
+retailer_id: "retailer_ABC"
+version: "2025-01-15"
+rmis_version: "0.1.0"
+
+sources:
+  events:
+    table: "abc_ads_logs"
+    keys:
+      - "event_id"
+    fields:
+      event_id: { from: "evt_id", type: "string", required: true }
+      ts: { from: "timestamp", type: "timestamp", transform: "to_utc" }
+      retailer_id: { const: "retailer_ABC" }
+      placement_type:
+        candidates:
+          - { from: "placement", map: { "onsite_prod": "sponsored_product", "display_onsite": "onsite_display", "offsite": "offsite_display" } }
+          - { from: "inv_type", map: { "SP": "sponsored_product", "OD": "onsite_display" } }
+        fallback: "unknown"
+      campaign_id: { from: "cmp_id" }
+      ad_group_id: { from: "adg_id" }
+      creative_id: { from: "creative_id" }
+      audience_id: { from: "aud_segment" }
+      device: { from: "device", normalize: ["lower"] }
+      geo: { from: "dma_code", transform: "dma_to_region" }
+      inventory_type:
+        derive:
+          expr: "case when channel = 'CTV' then 'CTV' when site = 'onsite' then 'onsite' else 'offsite' end"
+      sku_id:
+        derive:
+          expr: "coalesce(sku_id, upc, gtin)"
+      unit_price: { from: "price", type: "float" }
+      promo_flag: { from: "promo_flag", type: "boolean", normalize: ["bool_from_int"] }
+      in_stock_flag: { from: "stock_avail", type: "boolean" }
+      impressions: { from: "imps", type: "int", default: 0 }
+      clicks: { from: "clicks", type: "int", default: 0 }
+      attributed_conversions: { from: "conv", type: "int", default: 0 }
+      attributed_revenue: { from: "rev", type: "float", default: 0.0 }
+      view_through_conversions: { from: "vta", type: "int", default: 0 }
+      attr_model:
+        candidates:
+          - { from: "attrib_model", map: { "last": "last_click", "dd": "data_driven" } }
+        fallback: "unspecified"
+      lookback_window_days: { from: "lookback_days", type: "int", default: 7 }
+      cost: { from: "spend", type: "float", default: 0.0 }
+      currency: { from: "currency", default: "USD" }
+
+  sku_dimension:
+    table: "abc_catalog"
+    keys: ["sku_id"]
+    fields:
+      sku_id: { from: "sku_id" }
+      upc_ean_gtin: { from: "gtin" }
+      brand: { from: "brand_name" }
+      category: { from: "cat_lvl3" }
+      attributes_json:
+        derive:
+          expr: "json_build_object('size', size, 'flavor', flavor, 'pack', pack)"
+      margin_pct: { from: "margin", transform: "to_fraction" }
+
+  audience_dimension:
+    table: "abc_audiences"
+    keys: ["audience_id"]
+    fields:
+      audience_id: { from: "aud_id" }
+      definition: { from: "definition_text" }
+      seed_source: { from: "seed" }
+      size: { from: "population" }
+      overlap_metrics: { from: "overlap_json", type: "json" }
+
+  policy_specs_dimension:
+    table: "abc_policy"
+    keys: ["retailer_id"]
+    fields:
+      retailer_id: { const: "retailer_ABC" }
+      creative_specs_json: { from: "specs_json", type: "json" }
+      disallowed_terms: { from: "blocked_terms", type: "json" }
+      rate_limits: { from: "rate_limits", type: "json" }
+      api_endpoints: { from: "api_endpoints", type: "json" }
+
+crosswalks:
+  sku:
+    - { from: "sku_id", to: "gtin" }
+    - { from: "gtin", to: "upc" }
+
+tagging_normalizer:
+  rules:
+    - name: "placement_normalization"
+      if: { field: "placement_type", equals: "unknown" }
+      then:
+        derive:
+          expr: "case when position like '%sponsored%' then 'sponsored_product' else 'onsite_display' end"
+
+attribution_normalization:
+  declared_model_field: "attr_model"
+  recompute_common_kpis: true
+  windows:
+    - { name: "click_7d", click: 7, view: 0 }
+    - { name: "view_1d", click: 0, view: 1 }
+
+validation:
+  tests:
+    - name: "required_fields"
+      type: "not_null"
+      fields: ["event_id", "ts", "placement_type", "cost"]
+    - name: "enum_values"
+      type: "in_set"
+      field: "placement_type"
+      allowed: ["sponsored_product", "onsite_display", "offsite_display", "ctv", "audio", "search", "unknown"]
+    - name: "currency_format"
+      type: "regex"
+      field: "currency"
+      pattern: "^[A-Z]{3}$"
+    - name: "cell_k_anonymity"
+      type: "min_cell"
+      threshold: 50
+
+outputs:
+  rmis_event: "schema.rmis_event"
+  rmis_sku: "schema.rmis_sku"
+  rmis_audience: "schema.rmis_audience"
+  rmis_policy: "schema.rmis_policy"
