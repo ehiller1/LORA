@@ -75,3 +75,8 @@ sqlparse>=0.4.4  # For SQL parsing in auto-checks
 # Agent Framework
 crewai>=0.28.0  # Multi-agent orchestration framework
 crewai-tools>=0.2.0  # Pre-built tools for CrewAI
+
+# Enhanced Features Dependencies
+streamlit>=1.29.0  # For Custom Training UI
+graphviz>=0.20.0  # For federation graph visualization
+pillow>=10.0.0  # For image processing in UI

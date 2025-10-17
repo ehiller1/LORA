@@ -75,6 +75,16 @@ CLEAN_ROOM_BLOCKED_FIELDS = [
     "supplier_id"
 ]
 
+# Missing capabilities when using clean room only
+CLEAN_ROOM_MISSING_CAPABILITIES = [
+    "No margin data → Can't optimize profitability",
+    "No stock levels → Risk of out-of-stock allocation",
+    "No promo flags → Miss timing opportunities",
+    "No price data → Can't model price elasticity",
+    "Limited SKU coverage → Fewer optimization opportunities",
+    "Aggregated only → Less granular targeting"
+]
+
 
 class CleanRoomConnector:
     """
@@ -158,12 +168,15 @@ class CleanRoomConnector:
         
         execution_time = (time.time() - start_time) * 1000
         
+        blocked_fields = self._get_blocked_fields(df.columns.tolist(), allowed_fields)
+        
         return {
             "results": results,
             "row_count": len(results),
             "suppressed_cells": suppressed,
             "allowed_fields": allowed_fields,
-            "blocked_fields": self._get_blocked_fields(df.columns.tolist(), allowed_fields),
+            "blocked_fields": blocked_fields,
+            "missing_capabilities": self._get_missing_capabilities(blocked_fields),
             "execution_time_ms": execution_time,
             "k_anonymity_threshold": self.min_k_anonymity,
             "privacy_guarantees": [
@@ -192,6 +205,29 @@ class CleanRoomConnector:
     def _get_blocked_fields(self, all_fields: List[str], allowed_fields: List[str]) -> List[str]:
         """Get fields that are blocked in clean room."""
         return [f for f in all_fields if f not in allowed_fields]
+    
+    def _get_missing_capabilities(self, blocked_fields: List[str]) -> List[str]:
+        """Get list of missing capabilities based on blocked fields."""
+        capabilities = []
+        
+        # Check what's blocked and map to capabilities
+        if any(field in blocked_fields for field in ['margin', 'margin_pct']):
+            capabilities.append("No margin data → Can't optimize profitability")
+        
+        if any(field in blocked_fields for field in ['stock_level', 'stock_probability']):
+            capabilities.append("No stock levels → Risk of out-of-stock allocation")
+        
+        if 'promo_flag' in blocked_fields:
+            capabilities.append("No promo flags → Miss timing opportunities")
+        
+        if 'price' in blocked_fields:
+            capabilities.append("No price data → Can't model price elasticity")
+        
+        # Add general limitations
+        capabilities.append("Limited SKU coverage → Fewer optimization opportunities")
+        capabilities.append("Aggregated only → Less granular targeting")
+        
+        return capabilities
     
     def _load_data(self) -> pd.DataFrame:
         """Load data from warehouse."""
