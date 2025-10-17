@@ -72,10 +72,12 @@ alembic>=1.13.0  # For database migrations
 supabase>=2.0.0  # Optional: Real-time features, auth, storage
 sqlparse>=0.4.4  # For SQL parsing in auto-checks
 
-# Agent Framework (Optional - Requires Python 3.10+)
-# crewai>=0.28.0  # Multi-agent orchestration framework
-# crewai-tools>=0.2.0  # Pre-built tools for CrewAI
-# NOTE: If using Python 3.9, comment out crewai or upgrade to Python 3.10+
+# Agent Framework (Requires Python 3.10+)
+crewai>=0.28.0  # Multi-agent orchestration framework
+crewai-tools>=0.2.0  # Pre-built tools for CrewAI
+langchain-openai>=0.0.5  # OpenAI integration for LangChain
+langchain-core>=0.1.0  # Core LangChain functionality
+langgraph>=0.0.20  # State machine for agent workflows
 
 # Enhanced Features Dependencies
 streamlit>=1.29.0  # For Custom Training UI
