@@ -80,3 +80,10 @@ crewai-tools>=0.2.0  # Pre-built tools for CrewAI
 streamlit>=1.29.0  # For Custom Training UI
 graphviz>=0.20.0  # For federation graph visualization
 pillow>=10.0.0  # For image processing in UI
+
+# Storytelling & Visualization
+plotly>=5.18.0  # Interactive charts for ROI visualization
+streamlit-mermaid>=0.1.0  # Data flow diagrams
+streamlit-extras>=0.3.0  # Metric cards, badges, progress bars
+streamlit-lottie>=0.0.5  # Onboarding animations
+streamlit-aggrid>=0.3.4  # Enhanced interactive data tables

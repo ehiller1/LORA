@@ -26,6 +26,75 @@ This demo showcases the power of **federated LoRA adapters** compared to clean-r
 See how combining Generic LLM + Industry LoRA + Manufacturer LoRA delivers superior results.
 """)
 
+# Value Attribution Section
+st.markdown("---")
+st.markdown("## 🎯 What You're Seeing")
+
+st.markdown("""
+This demo compares **three approaches** to RMN optimization:
+
+1. **🟥 Generic LLM Only**: Base model with no specialized knowledge
+2. **🟨 Clean Room + Industry LoRA**: Shared industry knowledge, but no proprietary data  
+3. **🟩 Full Federation (Your Competitive Advantage)**: Generic + Industry + YOUR Manufacturer LoRA
+
+Watch how each layer adds value:
+""")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%); 
+                padding: 1.5rem; border-radius: 0.75rem; border: 2px solid #9E9E9E;">
+        <h3 style="color: #616161;">🧠 Generic LLM</h3>
+        <p style="font-weight: 600;">Provides:</p>
+        <ul style="font-size: 0.9rem;">
+            <li>Natural language understanding</li>
+            <li>General reasoning</li>
+            <li>Basic math/optimization</li>
+        </ul>
+        <hr style="border-color: #9E9E9E;">
+        <p style="font-size: 1.2rem; color: #616161; font-weight: 700;">ROAS: 2.1x</p>
+        <p style="font-size: 0.85rem; color: #757575;">Baseline performance</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); 
+                padding: 1.5rem; border-radius: 0.75rem; border: 2px solid #2196F3;">
+        <h3 style="color: #1976D2;">🏢 Industry LoRA</h3>
+        <p style="font-weight: 600;">Adds:</p>
+        <ul style="font-size: 0.9rem;">
+            <li>RMIS schema knowledge</li>
+            <li>Retail media best practices</li>
+            <li>Campaign structure</li>
+        </ul>
+        <hr style="border-color: #2196F3;">
+        <p style="font-size: 1.2rem; color: #1976D2; font-weight: 700;">ROAS: 2.8x (+33%)</p>
+        <p style="font-size: 0.85rem; color: #1976D2;">Shared industry knowledge</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); 
+                padding: 1.5rem; border-radius: 0.75rem; border: 2px solid #4CAF50;">
+        <h3 style="color: #2E7D32;">🏭 Your LoRA</h3>
+        <p style="font-weight: 600;">Your Advantage:</p>
+        <ul style="font-size: 0.9rem;">
+            <li><strong>Product affinities</strong></li>
+            <li><strong>Margin optimization</strong></li>
+            <li><strong>Historical performance</strong></li>
+        </ul>
+        <hr style="border-color: #4CAF50;">
+        <p style="font-size: 1.2rem; color: #2E7D32; font-weight: 700;">ROAS: 3.5x (+25% more)</p>
+        <p style="font-size: 0.85rem; color: #2E7D32; font-weight: 600;">🏆 Competitive advantage</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("---")
+
 # Sidebar controls
 with st.sidebar:
     st.header("⚙️ Demo Configuration")
