@@ -54,7 +54,7 @@ class LoRATrainingConfig:
     lr_scheduler_type: str = "cosine"
     
     # Optimization
-    optim: str = "paged_adamw_32bit"
+    optim: str = "paged_adamw_8bit"
     weight_decay: float = 0.001
     
     # Logging
